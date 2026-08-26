@@ -1,0 +1,31 @@
+XBSTACK isolated reproduction — no external runner available
+Date: 2026-08-26
+Host: Linux x86_64 NAS
+Docker: 28.5.2
+n8n: 2.37.1
+Runner mode: external
+N8N_RUNNERS_TASK_REQUEST_TIMEOUT: 15 (shortened from the documented default 60s for the lab)
+Workflow: Manual Trigger -> Minimal Code
+Code: return [{ json: { ok: true, source: 'xbstack-task-runner-repro' } }];
+
+Observed n8n log excerpt:
+
+n8n Task Broker ready on 0.0.0.0, port 5679
+Task request timed out
+Error: Task request timed out
+    at LocalTaskRequester.requestExpired (.../task-requester.ts:315:22)
+    at LocalTaskRequester.onMessage (.../task-requester.ts:276:10)
+    at TaskBroker.handleRequestTimeout (.../task-broker.service.ts:179:50)
+
+Execution result excerpt:
+
+"message": "Task request timed out"
+"description": "Your Code node task was not matched to a runner within the timeout period (waited 15 seconds). This indicates that the task runner is currently down, or not ready, or at capacity, so it cannot service your task."
+"extra": { "elapsedSeconds": 15 }
+"lastNodeExecuted": "Minimal Code"
+"executionTime": 15040
+"executionStatus": "error"
+"status": "error"
+
+Interpretation boundary:
+This test intentionally removed the external runner. It verifies the exact timeout/error path when no matching runner accepts the JavaScript task. It does not prove that every production report with the same message has the same underlying reason for runner unavailability.
