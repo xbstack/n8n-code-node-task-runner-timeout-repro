@@ -1,0 +1,39 @@
+XBSTACK isolated recovery control — start runner while request is waiting
+Date: 2026-08-26
+Host: Linux x86_64 NAS
+Docker: 28.5.2
+n8n: 2.37.1
+runners image: 2.37.1
+Runner mode: external
+N8N_RUNNERS_TASK_REQUEST_TIMEOUT: 15
+Workflow: Manual Trigger -> Minimal Code
+
+Sequence:
+1. Start the n8n CLI execution in external-runner mode with no runner container running yet.
+2. Start the matching n8nio/runners:2.37.1 sidecar before the 15-second request timeout expires.
+3. Observe runner registration and workflow completion.
+
+Observed n8n excerpt:
+
+n8n Task Broker ready on 0.0.0.0, port 5679
+Registered runner "launcher-javascript"
+Registered runner "launcher-python"
+No matching task offer for request (...) (type "javascript"). Available offer types: [python]
+Registered runner "JS Task Runner"
+Execution was successful
+
+Minimal Code result excerpt:
+
+"executionTime": 8420
+"executionStatus": "success"
+"json": {
+  "ok": true,
+  "source": "xbstack-task-runner-repro"
+}
+"startedAt": "2026-08-26T04:26:55.293Z"
+"stoppedAt": "2026-08-26T04:27:03.724Z"
+"status": "success"
+"finished": true
+
+Interpretation boundary:
+The pending task did not need to be retried manually in this isolated CLI test. Once a matching JavaScript runner registered before the request-timeout deadline, the same pending Code task was accepted and the workflow completed. This demonstrates that N8N_RUNNERS_TASK_REQUEST_TIMEOUT is a wait-for-runner window, not a JavaScript execution-time limit.
