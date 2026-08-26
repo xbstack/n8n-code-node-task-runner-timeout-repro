@@ -1,0 +1,32 @@
+XBSTACK isolated control — matching external runner available
+Date: 2026-08-26
+Host: Linux x86_64 NAS
+Docker: 28.5.2
+n8n: 2.37.1
+runners image: 2.37.1
+Runner mode: external
+N8N_RUNNERS_TASK_REQUEST_TIMEOUT: 15
+Workflow: Manual Trigger -> Minimal Code
+
+Observed control excerpt:
+
+n8n Task Broker ready on 0.0.0.0, port 5679
+Registered runner "launcher-python"
+No matching task offer for request (...) (type "javascript"). Available offer types: [python]
+Registered runner "launcher-javascript"
+Registered runner "JS Task Runner"
+Execution was successful
+
+Minimal Code result excerpt:
+
+"executionTime": 6120
+"executionStatus": "success"
+"json": {
+  "ok": true,
+  "source": "xbstack-task-runner-repro"
+}
+"status": "success"
+"finished": true
+
+Interpretation boundary:
+The same workflow and n8n version that time out with no matching runner complete successfully once the JavaScript runner registers. The measured execution time includes runner startup/registration overhead in this disposable compose control and is not a Code-node performance benchmark.
