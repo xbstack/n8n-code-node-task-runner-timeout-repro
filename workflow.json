@@ -1,0 +1,37 @@
+{
+  "id": "xbstack-n8n-task-runner-timeout-repro",
+  "name": "XBSTACK Task Runner Timeout Minimal Repro",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "When clicking Test workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { ok: true, source: 'xbstack-task-runner-repro' } }];"
+      },
+      "id": "code",
+      "name": "Minimal Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 0]
+    }
+  ],
+  "connections": {
+    "When clicking Test workflow": {
+      "main": [[{
+        "node": "Minimal Code",
+        "type": "main",
+        "index": 0
+      }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}
